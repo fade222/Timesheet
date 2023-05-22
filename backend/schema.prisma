@@ -11,65 +11,47 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model Admin {
   id        String    @id @default(cuid())
   name      String    @default("")
   email     String    @unique @default("")
   password  String
-  posts     Post[]    @relation("Post_author")
   createdAt DateTime? @default(now())
 }
 
-model Post {
-  id       String  @id @default(cuid())
-  title    String  @default("")
-  content  String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  author   User?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId String? @map("author")
-  tags     Tag[]   @relation("Post_tags")
-
-  @@index([authorId])
-}
-
-model Tag {
-  id    String @id @default(cuid())
-  name  String @default("")
-  posts Post[] @relation("Post_tags")
-}
-
 model TimeSheet {
-  id                      String     @id @default(cuid())
-  labourTime              Int?
-  jobNumber               String     @default("")
-  employeeID              Employee?  @relation("TimeSheet_employeeID", fields: [employeeIDId], references: [id])
-  employeeIDId            String?    @map("employeeID")
-  description             String     @default("")
-  costCode                String     @default("")
-  submitStatus            String?
-  timeSheetDate           String?    @unique
-  from_Employee_timeSheet Employee[] @relation("Employee_timeSheet")
+  id            String      @id @default(cuid())
+  labourTime    Int?
+  jobNumber     JobNumber[] @relation("TimeSheet_jobNumber")
+  employee      Employee?   @relation("TimeSheet_employee", fields: [employeeId], references: [id])
+  employeeId    String?     @map("employee")
+  description   String      @default("")
+  costCode      CostCode[]  @relation("TimeSheet_costCode")
+  submitStatus  String?
+  timeSheetDate String?     @unique
 
-  @@index([employeeIDId])
+  @@index([employeeId])
 }
 
 model Employee {
-  id                        String      @id @default(cuid())
-  firstName                 String      @default("")
-  LastName                  String      @default("")
-  password                  String      @default("")
-  timeSheet                 TimeSheet[] @relation("Employee_timeSheet")
-  from_TimeSheet_employeeID TimeSheet[] @relation("TimeSheet_employeeID")
+  id        String      @id @default(cuid())
+  firstName String      @default("")
+  LastName  String      @default("")
+  password  String      @default("")
+  timeSheet TimeSheet[] @relation("TimeSheet_employee")
 }
 
 model CostCode {
-  id                        String @id @default(cuid())
-  productionCode            String @default("")
-  productionCodeDescription String @default("")
+  id                        String      @id @default(cuid())
+  productionCode            String      @default("")
+  productionCodeDescription String      @default("")
+  from_TimeSheet_costCode   TimeSheet[] @relation("TimeSheet_costCode")
 }
 
 model JobNumber {
-  id        String @id @default(cuid())
-  jobNumber String @default("")
+  id                       String      @id @default(cuid())
+  jobNumber                String      @default("")
+  from_TimeSheet_jobNumber TimeSheet[] @relation("TimeSheet_jobNumber")
 }
 
 model TimeClock {
