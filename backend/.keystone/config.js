@@ -33,16 +33,14 @@ var lists = {
   Admin: (0, import_core.list)({
     access: import_access.allowAll,
     fields: {
+      isSystemAdmin: (0, import_fields.checkbox)(),
       name: (0, import_fields.text)({ validation: { isRequired: true } }),
       email: (0, import_fields.text)({
         validation: { isRequired: true },
-        // by adding isIndexed: 'unique', we're saying that no user can have the same
-        // email as another user - this may or may not be a good idea for your project
         isIndexed: "unique"
       }),
       password: (0, import_fields.password)({ validation: { isRequired: true } }),
       createdAt: (0, import_fields.timestamp)({
-        // this sets the timestamp to Date.now() when the user is first created
         defaultValue: { kind: "now" }
       })
     }
@@ -51,10 +49,10 @@ var lists = {
     access: import_access.allowAll,
     fields: {
       labourTime: (0, import_fields.integer)(),
-      jobNumber: (0, import_fields.relationship)({ ref: "JobNumber", many: true }),
-      employee: (0, import_fields.relationship)({ ref: "Employee.timeSheet" }),
+      jobNumbers: (0, import_fields.relationship)({ ref: "JobNumber", many: true }),
+      employee: (0, import_fields.relationship)({ ref: "Employee.timeSheets" }),
       description: (0, import_fields.text)(),
-      costCode: (0, import_fields.relationship)({ ref: "CostCode", many: true }),
+      costCodes: (0, import_fields.relationship)({ ref: "CostCode", many: true }),
       submitStatus: (0, import_fields.select)({
         options: [
           { label: "open", value: "open" },
@@ -72,7 +70,8 @@ var lists = {
       firstName: (0, import_fields.text)({ validation: { isRequired: true } }),
       LastName: (0, import_fields.text)({ validation: { isRequired: true } }),
       password: (0, import_fields.text)({ validation: { isRequired: true } }),
-      timeSheet: (0, import_fields.relationship)({ ref: "TimeSheet.employee", many: true })
+      isAdmin: (0, import_fields.checkbox)(),
+      timeSheets: (0, import_fields.relationship)({ ref: "TimeSheet.employee", many: true })
     }
   }),
   CostCode: (0, import_core.list)({

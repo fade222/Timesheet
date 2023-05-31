@@ -3,6 +3,7 @@
 
 type Admin {
   id: ID!
+  isSystemAdmin: Boolean
   name: String
   email: String
   password: PasswordState
@@ -25,6 +26,7 @@ input AdminWhereInput {
   OR: [AdminWhereInput!]
   NOT: [AdminWhereInput!]
   id: IDFilter
+  isSystemAdmin: BooleanFilter
   name: StringFilter
   email: StringFilter
   createdAt: DateTimeNullableFilter
@@ -39,6 +41,11 @@ input IDFilter {
   gt: ID
   gte: ID
   not: IDFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
 }
 
 input StringFilter {
@@ -82,6 +89,7 @@ input DateTimeNullableFilter {
 
 input AdminOrderByInput {
   id: OrderDirection
+  isSystemAdmin: OrderDirection
   name: OrderDirection
   email: OrderDirection
   createdAt: OrderDirection
@@ -93,6 +101,7 @@ enum OrderDirection {
 }
 
 input AdminUpdateInput {
+  isSystemAdmin: Boolean
   name: String
   email: String
   password: String
@@ -105,6 +114,7 @@ input AdminUpdateArgs {
 }
 
 input AdminCreateInput {
+  isSystemAdmin: Boolean
   name: String
   email: String
   password: String
@@ -114,12 +124,12 @@ input AdminCreateInput {
 type TimeSheet {
   id: ID!
   labourTime: Int
-  jobNumber(where: JobNumberWhereInput! = {}, orderBy: [JobNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: JobNumberWhereUniqueInput): [JobNumber!]
-  jobNumberCount(where: JobNumberWhereInput! = {}): Int
+  jobNumbers(where: JobNumberWhereInput! = {}, orderBy: [JobNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: JobNumberWhereUniqueInput): [JobNumber!]
+  jobNumbersCount(where: JobNumberWhereInput! = {}): Int
   employee: Employee
   description: String
-  costCode(where: CostCodeWhereInput! = {}, orderBy: [CostCodeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CostCodeWhereUniqueInput): [CostCode!]
-  costCodeCount(where: CostCodeWhereInput! = {}): Int
+  costCodes(where: CostCodeWhereInput! = {}, orderBy: [CostCodeOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CostCodeWhereUniqueInput): [CostCode!]
+  costCodesCount(where: CostCodeWhereInput! = {}): Int
   submitStatus: String
   timeSheetDate: CalendarDay
 }
@@ -137,10 +147,10 @@ input TimeSheetWhereInput {
   NOT: [TimeSheetWhereInput!]
   id: IDFilter
   labourTime: IntNullableFilter
-  jobNumber: JobNumberManyRelationFilter
+  jobNumbers: JobNumberManyRelationFilter
   employee: EmployeeWhereInput
   description: StringFilter
-  costCode: CostCodeManyRelationFilter
+  costCodes: CostCodeManyRelationFilter
   submitStatus: StringNullableFilter
   timeSheetDate: CalendarDayNullableFilter
 }
@@ -217,10 +227,10 @@ input TimeSheetOrderByInput {
 
 input TimeSheetUpdateInput {
   labourTime: Int
-  jobNumber: JobNumberRelateToManyForUpdateInput
+  jobNumbers: JobNumberRelateToManyForUpdateInput
   employee: EmployeeRelateToOneForUpdateInput
   description: String
-  costCode: CostCodeRelateToManyForUpdateInput
+  costCodes: CostCodeRelateToManyForUpdateInput
   submitStatus: String
   timeSheetDate: CalendarDay
 }
@@ -252,10 +262,10 @@ input TimeSheetUpdateArgs {
 
 input TimeSheetCreateInput {
   labourTime: Int
-  jobNumber: JobNumberRelateToManyForCreateInput
+  jobNumbers: JobNumberRelateToManyForCreateInput
   employee: EmployeeRelateToOneForCreateInput
   description: String
-  costCode: CostCodeRelateToManyForCreateInput
+  costCodes: CostCodeRelateToManyForCreateInput
   submitStatus: String
   timeSheetDate: CalendarDay
 }
@@ -280,8 +290,9 @@ type Employee {
   firstName: String
   LastName: String
   password: String
-  timeSheet(where: TimeSheetWhereInput! = {}, orderBy: [TimeSheetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TimeSheetWhereUniqueInput): [TimeSheet!]
-  timeSheetCount(where: TimeSheetWhereInput! = {}): Int
+  isAdmin: Boolean
+  timeSheets(where: TimeSheetWhereInput! = {}, orderBy: [TimeSheetOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TimeSheetWhereUniqueInput): [TimeSheet!]
+  timeSheetsCount(where: TimeSheetWhereInput! = {}): Int
 }
 
 input EmployeeWhereUniqueInput {
@@ -296,7 +307,8 @@ input EmployeeWhereInput {
   firstName: StringFilter
   LastName: StringFilter
   password: StringFilter
-  timeSheet: TimeSheetManyRelationFilter
+  isAdmin: BooleanFilter
+  timeSheets: TimeSheetManyRelationFilter
 }
 
 input TimeSheetManyRelationFilter {
@@ -310,13 +322,15 @@ input EmployeeOrderByInput {
   firstName: OrderDirection
   LastName: OrderDirection
   password: OrderDirection
+  isAdmin: OrderDirection
 }
 
 input EmployeeUpdateInput {
   firstName: String
   LastName: String
   password: String
-  timeSheet: TimeSheetRelateToManyForUpdateInput
+  isAdmin: Boolean
+  timeSheets: TimeSheetRelateToManyForUpdateInput
 }
 
 input TimeSheetRelateToManyForUpdateInput {
@@ -335,7 +349,8 @@ input EmployeeCreateInput {
   firstName: String
   LastName: String
   password: String
-  timeSheet: TimeSheetRelateToManyForCreateInput
+  isAdmin: Boolean
+  timeSheets: TimeSheetRelateToManyForCreateInput
 }
 
 input TimeSheetRelateToManyForCreateInput {

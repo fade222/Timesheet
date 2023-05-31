@@ -8,6 +8,7 @@ import {
   select,
   integer,
   calendarDay,
+  checkbox,
 } from "@keystone-6/core/fields";
 import type { Lists } from ".keystone/types";
 import {
@@ -19,19 +20,14 @@ export const lists: Lists = {
   Admin: list({
     access: allowAll,
     fields: {
+      isSystemAdmin: checkbox(),
       name: text({ validation: { isRequired: true } }),
-
       email: text({
         validation: { isRequired: true },
-        // by adding isIndexed: 'unique', we're saying that no user can have the same
-        // email as another user - this may or may not be a good idea for your project
         isIndexed: "unique",
       }),
-
       password: password({ validation: { isRequired: true } }),
-
       createdAt: timestamp({
-        // this sets the timestamp to Date.now() when the user is first created
         defaultValue: { kind: "now" },
       }),
     },
@@ -41,10 +37,10 @@ export const lists: Lists = {
     access: allowAll,
     fields: {
       labourTime: integer(),
-      jobNumber: relationship({ ref: "JobNumber", many: true }),
-      employee: relationship({ ref: "Employee.timeSheet" }),
+      jobNumbers: relationship({ ref: "JobNumber", many: true }),
+      employee: relationship({ ref: "Employee.timeSheets" }),
       description: text(),
-      costCode: relationship({ ref: "CostCode", many: true }),
+      costCodes: relationship({ ref: "CostCode", many: true }),
       submitStatus: select({
         options: [
           { label: "open", value: "open" },
@@ -56,15 +52,18 @@ export const lists: Lists = {
       }),
     },
   }),
+
   Employee: list({
     access: allowAll,
     fields: {
       firstName: text({ validation: { isRequired: true } }),
       LastName: text({ validation: { isRequired: true } }),
       password: text({ validation: { isRequired: true } }),
-      timeSheet: relationship({ ref: "TimeSheet.employee", many: true }),
+      isAdmin: checkbox(),
+      timeSheets: relationship({ ref: "TimeSheet.employee", many: true }),
     },
   }),
+
   CostCode: list({
     access: allowAll,
     fields: {
@@ -72,12 +71,14 @@ export const lists: Lists = {
       productionCodeDescription: text(),
     },
   }),
+
   JobNumber: list({
     access: allowAll,
     fields: {
       jobNumber: text(),
     },
   }),
+
   TimeClock: list({
     access: allowAll,
     fields: {

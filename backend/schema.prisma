@@ -12,21 +12,22 @@ generator client {
 }
 
 model Admin {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @unique @default("")
-  password  String
-  createdAt DateTime? @default(now())
+  id            String    @id @default(cuid())
+  isSystemAdmin Boolean   @default(false)
+  name          String    @default("")
+  email         String    @unique @default("")
+  password      String
+  createdAt     DateTime? @default(now())
 }
 
 model TimeSheet {
   id            String      @id @default(cuid())
   labourTime    Int?
-  jobNumber     JobNumber[] @relation("TimeSheet_jobNumber")
+  jobNumbers    JobNumber[] @relation("TimeSheet_jobNumbers")
   employee      Employee?   @relation("TimeSheet_employee", fields: [employeeId], references: [id])
   employeeId    String?     @map("employee")
   description   String      @default("")
-  costCode      CostCode[]  @relation("TimeSheet_costCode")
+  costCodes     CostCode[]  @relation("TimeSheet_costCodes")
   submitStatus  String?
   timeSheetDate String?     @unique
 
@@ -34,24 +35,25 @@ model TimeSheet {
 }
 
 model Employee {
-  id        String      @id @default(cuid())
-  firstName String      @default("")
-  LastName  String      @default("")
-  password  String      @default("")
-  timeSheet TimeSheet[] @relation("TimeSheet_employee")
+  id         String      @id @default(cuid())
+  firstName  String      @default("")
+  LastName   String      @default("")
+  password   String      @default("")
+  isAdmin    Boolean     @default(false)
+  timeSheets TimeSheet[] @relation("TimeSheet_employee")
 }
 
 model CostCode {
   id                        String      @id @default(cuid())
   productionCode            String      @default("")
   productionCodeDescription String      @default("")
-  from_TimeSheet_costCode   TimeSheet[] @relation("TimeSheet_costCode")
+  from_TimeSheet_costCodes  TimeSheet[] @relation("TimeSheet_costCodes")
 }
 
 model JobNumber {
-  id                       String      @id @default(cuid())
-  jobNumber                String      @default("")
-  from_TimeSheet_jobNumber TimeSheet[] @relation("TimeSheet_jobNumber")
+  id                        String      @id @default(cuid())
+  jobNumber                 String      @default("")
+  from_TimeSheet_jobNumbers TimeSheet[] @relation("TimeSheet_jobNumbers")
 }
 
 model TimeClock {
