@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "concurrently \"cd backend && pnpm dev\" \"cd frontend && pnpm dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
